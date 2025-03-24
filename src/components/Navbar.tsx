@@ -12,6 +12,7 @@ import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Menu from "@mui/material/Menu";
 import { useAuth } from "../config/AuthContext";
+import { IoMdHome } from "react-icons/io";
 // Styled Components
 const NavbarContainer = styled(Box)({
   position: "relative",
@@ -107,12 +108,22 @@ const Navbar: React.FC<MidnavbarProps> = ({setPage, page}) => {
 
   return (
     <NavbarContainer>
+    <Box display={"flex"}   sx={{ color: "#FFFFFF", fontSize: "15px", border:"1px solid #aaa",
+     borderRadius:'5px',px:1,
+      alignContent:"center",alignItems:"center"
+     }}
+     
+     onClick={()=>{
+      setPage("home")
+    }} >
+    {/* <IoMdHome /> */}
       <Typography
         variant="subtitle1"
-        sx={{ color: "#FFFFFF", fontSize: "0.9rem" }}
+        sx={{ color: "#FFFFFF", fontSize: "0.9rem"}}
       >
-        AI
+        GAI
       </Typography>
+    </Box>
 
       {/* <WalletWrapper>
         <WalletBox>

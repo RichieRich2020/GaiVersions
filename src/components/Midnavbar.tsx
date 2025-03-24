@@ -13,7 +13,9 @@ import DehazeIcon from '@mui/icons-material/Dehaze';
 import {  TrendingUp, Tag, AttachMoney } from "@mui/icons-material";
 import ArticleIcon from '@mui/icons-material/Article';
 import Search from "./Search";
-
+import { IoCloseCircle } from "react-icons/io5";
+import { IoMdHome } from 'react-icons/io';
+import { FaSearch } from "react-icons/fa";
 const StyledSearchBox = styled(Paper)(({ theme }) => ({
     width: "100%",
     maxWidth: "100%",
@@ -49,12 +51,13 @@ interface TabItem {
   icon?: React.ReactElement;
   onClick?: () => void;
 }
-
+const iconsize={ fontSize:"20px"}
 const tabItems: TabItem[] = [
-  { label: "Tweet", icon: <ArticleIcon />, onClick: () => console.log("Tweet clicked") },
-  { label: "CashTag", icon: <AttachMoney />, onClick: () => console.log("CashTag clicked") },
-  { label: "Hashtag", icon: <Tag />, onClick: () => console.log("Hashtag clicked") },
-  { label: "Trade", icon: <TrendingUp />, onClick: () => console.log("Trade clicked") },
+  { label: "home", icon: <IoMdHome style={iconsize} />, onClick: () => console.log("Tweet clicked") },
+  { label: "Tweet", icon: <ArticleIcon style={iconsize} />, onClick: () => console.log("Tweet clicked") },
+  { label: "CashTag", icon: <AttachMoney style={iconsize} />, onClick: () => console.log("CashTag clicked") },
+  { label: "Hashtag", icon: <Tag  style={iconsize} />, onClick: () => console.log("Hashtag clicked") },
+  { label: "Trade", icon: <TrendingUp style={iconsize} />, onClick: () => console.log("Trade clicked") },
 //   { label: "Search", icon: <Search />, onClick: () => console.log("Search clicked") },
 ];
 
@@ -67,7 +70,7 @@ const CustomTab: React.FC<{ item: TabItem; selected: boolean; onClick: () => voi
         display: "flex",
         alignItems: "center",
         p: "2px",
-        px:1,
+        px:0.5,
         backgroundColor: selected?"#7000FF":"#1a1b23",
         borderRadius: "8px",
         border: "none",
@@ -87,13 +90,14 @@ const CustomTab: React.FC<{ item: TabItem; selected: boolean; onClick: () => voi
 interface MidnavbarProps {
   setPage: (page: string) => void;
   page: string;
+  setSearchedData: (data: any | null) => void;
 }
 
-const Midnavbar:React.FC<MidnavbarProps> = ({setPage, page }) => {
+const Midnavbar:React.FC<MidnavbarProps> = ({setPage, page,setSearchedData }) => {
 
-  const [value, setValue] = useState<number>(-1);
-  const [showTabs, setShowTabs] = useState<boolean>(false);
-
+  const [value, setValue] = useState<number>(0);
+  const [showTabs, setShowTabs] = useState<boolean>(true);
+  // const [searchedData, setSearchedData] = useState<any>();
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
     tabItems[newValue].onClick?.();
@@ -105,15 +109,16 @@ const Midnavbar:React.FC<MidnavbarProps> = ({setPage, page }) => {
 
   return (
     <Box sx={{ bgcolor: "#090909", my:2,width:"100%"}}>
-      <Box sx={{ display: "flex", alignItems: "center", gap: "8px",bgcolor:"#0B0B0B",alignContent:"center",width:"100%"}}>
-      {!showTabs && ( <DehazeIcon 
+      <Box sx={{ display: "flex", alignItems: "center", gap: "4px",bgcolor:"#0B0B0B",alignContent:"center",width:"100%" , border:"2px  solid red"}}>
+      {/* {showTabs && ( <DehazeIcon 
           sx={{ 
             color: "white", 
            
             cursor: "pointer",
           }} 
-          onClick={toggleTabs}
-        />)}
+          // onClick={toggleTabs}
+        />)} */}
+        
         <SearchBoxWrapper >
         {showTabs && (
         // <Box
@@ -131,7 +136,7 @@ const Midnavbar:React.FC<MidnavbarProps> = ({setPage, page }) => {
             // TabIndicatorProps={{ sx: { display: "none" } }}
             sx={{
                 display:"flex",
-                // width: "100%",
+                width: "100%",
                 justifyContent:"center",
 
             }}
@@ -152,20 +157,41 @@ const Midnavbar:React.FC<MidnavbarProps> = ({setPage, page }) => {
           </Box>
         // </Box>
       )}
-          <StyledSearchBox sx={{ width: showTabs ? "calc(100% - 90%)" : "100%", height:"30px",
-               }} onClick={!showTabs?()=>{}:toggleTabs}>
-                 {/* <SearchIcon sx={{ color: "gray" , alignItems:"center"}} /> */}
-            {/* <InputBase
-              placeholder="Search your favorite $ Cashtag"
-              sx={{ ml: 1, flex: 1, color: "white", fontSize: "0.75rem" ,
-               
-              }}
+      {showTabs ?
+      <Box
+      // onClick={onClick}
+      sx={{
+          width: "100%",
+          maxWidth: "100px",
+          display: "flex",
+          alignItems: "center",
+          p:1,
+          backgroundColor:"#1a1b23",
+          borderRadius: "50%",
+          border: "none",
+          transition: 'width 1.5s ease-out', // Add transition for width
+         color:"gray",
+         mx:0.5,
+         
+      }}
+      onClick={!showTabs?()=>{}:toggleTabs}>
+    
+    <FaSearch />
+    </Box>: <StyledSearchBox sx={{ width: showTabs ? "calc(100% - 90%)" : "100%", height:"30px"            }} 
+          >
 
-            /> */}
-            <Search/>
-           
-          </StyledSearchBox>
+            <Search setPage={setPage} setSearchedData={setSearchedData}/>
+            <IoCloseCircle style={{
+            color:"#8b5cf6",
+            position:"relative" 
+          }} 
+            onClick={toggleTabs}
+          />
+          </StyledSearchBox>}
+
+         
         </SearchBoxWrapper>
+
       </Box>
       
     </Box>

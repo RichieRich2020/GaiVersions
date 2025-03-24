@@ -184,12 +184,12 @@ const TokenChainLogo = styled(Avatar)(({ theme }) => ({
 
 const StatLabel = styled(Typography)(({ theme }) => ({
   color: "#6b7280",
-  fontSize: "0.65rem"
+  fontSize: "0.80rem"
 }));
 
 const StatValue = styled(Typography)(({ theme }) => ({
   color: "#ffffff",
-  fontSize: "0.7rem",
+  fontSize: "0.9rem",
   fontWeight: "bold",
   marginRight: "4px"
 }));
@@ -197,7 +197,7 @@ const StatValue = styled(Typography)(({ theme }) => ({
 const PercentChange = styled(Typography)<{ negative?: boolean }>(
   ({ theme, negative }) => ({
     color: negative ? "#ff4d4d" : "#00cc66",
-    fontSize: "0.6rem",
+    fontSize: "0.9rem",
     fontWeight: "bold",
     marginLeft: "4px"
   })

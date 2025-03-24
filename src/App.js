@@ -25,6 +25,7 @@ import  CryptoPairStats from "./components/CryptoPairStats"
 import CashtagMentioned from "./components/CashtagMentioned"
 import Referral from "./components/Referral"
 import Search from "./components/Search"
+import TokenCard from './components/TokenCard';
 function App() {
   const mockData = {
     user: {
@@ -105,7 +106,18 @@ function App() {
  
 
 <CryptoInsightsPanel/>
-      
+<TokenCard tokenName={"xrp"}
+pair={""}
+exchange={""}
+network={""}
+price={0}
+priceChange={0}
+marketCap={0}
+volume={0}
+liquidity={0}
+age={""}
+tokenIcon={""}
+/>    
    <Search/>
     </ThemeProvider>
     </AuthProvider>

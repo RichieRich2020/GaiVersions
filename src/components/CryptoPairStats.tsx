@@ -128,14 +128,14 @@ const StatBox = styled(Box)(({ theme }) => ({
 }));
 
 const StatLabel = styled(Typography)(({ theme }) => ({
-  fontSize: "0.5rem", // Further reduced
+  fontSize: "0.8rem", // Further reduced
   color: "#9e9e9e",
-  marginBottom: "1px", // Further reduced
+  marginBottom: "4px", // Further reduced
   lineHeight: 1, // Tighten line height
 }));
 
 const StatValue = styled(Typography)(({ theme }) => ({
-  fontSize: "0.55rem", // Further reduced
+  fontSize: "0.85rem", // Further reduced
   fontWeight: "bold",
   color: "#ffffff",
   lineHeight: 1, // Tighten line height
@@ -146,7 +146,7 @@ const PositiveChange = styled(Box)(({ theme }) => ({
   alignItems: "center",
   color: "#4caf50",
   fontWeight: "bold",
-  fontSize: "0.55rem", // Matched to StatValue
+  fontSize: "0.85rem", // Matched to StatValue
   lineHeight: 1, // Tighten line height
 }));
 

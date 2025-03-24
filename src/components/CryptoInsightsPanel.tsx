@@ -13,7 +13,7 @@ import Login from "./Login";
 
 const CryptoInsightsPanel: React.FC = () => {
   const [page, setPage] = useState("home");
-
+  const [searchedData, setSearchedData] = useState<any>();
   return (
     <Box
       sx={{
@@ -42,7 +42,7 @@ const CryptoInsightsPanel: React.FC = () => {
         <Navbar setPage={setPage} page={page} />
 
         {/* Search Bar */}
-        <Midnavbar setPage={setPage} page={page} />
+        <Midnavbar setPage={setPage} page={page} setSearchedData={setSearchedData} />
 
         {page === "home" && <Home />}
         {page === "Profile" && <Profile />}

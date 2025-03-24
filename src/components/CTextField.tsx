@@ -41,11 +41,12 @@ export const CTextField: React.FC<
 
   return (
     <Box sx={{ position: "relative" }}>
-      <TextField
+     <TextField
   {...omit(params, "inputProps")}
   {...other}
   sx={{
-    width: "100%",
+    width: "110%",
+    color: "white",
     border: "none",
     "& fieldset": {
       border: "none !important", // Remove border
@@ -56,6 +57,12 @@ export const CTextField: React.FC<
     "&.Mui-focused fieldset": {
       border: "none !important", // Prevent border on focus
     },
+    "& input": {
+      color: "white", // Set text color to white
+    },
+    "&::placeholder": {
+      color: "rgba(255, 255, 255, 0.7)", // Placeholder color
+    }
   }}
   inputProps={{
     ...omit(params.inputProps, ["value", "onChange", "placeholder"]),
@@ -63,11 +70,19 @@ export const CTextField: React.FC<
     onChange: handleInputChange,
     onBlur: handleInputBlur,
     onFocus: handleInputFocus,
+    placeholder: "Search", // ✅ Add placeholder here
+    style: { color: "white" }, // Text color for input
   }}
   InputLabelProps={{
     shrink: isFocus || !!selectedOption,
+    style: {
+      color: "white",
+      backgroundColor: "red",
+    }, // Text color for label
   }}
 />
+
+
 
 
       {!isFocus && selectedOption && (
@@ -81,12 +96,12 @@ export const CTextField: React.FC<
             // padding: "4px",
             borderRadius: "4px",
             boxShadow: 1,
-            border: "none",
+            // border: "2px solid red",
             backgroundColor:"#0B0B0B"
            
           }}
         >
-          <div>{selectedOption.name}</div>
+          {/* <div></div> */}
           {/* <div>{selectedOption.year}</div> */}
         </Box>
       )}
