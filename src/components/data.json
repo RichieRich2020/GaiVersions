@@ -1,0 +1,390 @@
+{
+    "TRUMP": [
+        {
+            "TokenName": "Based Official Trump Coin",
+            "Symbol": "TRUMP",
+            "TokenAge": "",
+            "TokenLogo": "https://dd.dexscreener.com/ds-data/tokens/base/0x0888fadaba272dc1c81d48332630dffe142a5817.png",
+            "MarketCap": 5465,
+            "Mentions24h": 0,
+            "VolumeChange": 0,
+            "PriceChange24h": 0,
+            "category": "N/A",
+            "date_added": "N/A",
+            "date_launched": "2025-01-18T09:37:17",
+            "max_supply": "N/A",
+            "circulating_supply": "N/A",
+            "total_supply": "N/A",
+            "infinite_supply": false,
+            "num_market_pairs": 1,
+            "cmc_rank": "N/A",
+            "chain_id": "Base",
+            "platform": "Uniswap",
+            "market_cap_dominance": 0,
+            "description": "N/A",
+            "tags": [],
+            "urls": {},
+            "contracts": [
+                {
+                    "address": "0x0888FADabA272Dc1C81D48332630dFfE142A5817",
+                    "chain": "Base"
+                }
+            ],
+            "token_pairs_info": [
+                {
+                    "pair_address": "0x830220EDc20e004106FD67d5D939078A6ED94f5e",
+                    "pair_name": "Based Official Trump Coin / Wrapped Ether",
+                    "price_in_usd": "0.000005699",
+                    "volume_h24": null,
+                    "market_cap_in_usd": "5465",
+                    "fdv_in_usd": "5465",
+                    "network": {
+                        "name": "Base",
+                        "image_url": null
+                    },
+                    "dex": {
+                        "name": "Uniswap",
+                        "image_url": null
+                    },
+                    "tokens": [
+                        {
+                            "name": "Based Official Trump Coin",
+                            "symbol": "TRUMP",
+                            "address": "0x0888FADabA272Dc1C81D48332630dFfE142A5817",
+                            "image_url": "https://dd.dexscreener.com/ds-data/tokens/base/0x0888fadaba272dc1c81d48332630dffe142a5817.png"
+                        },
+                        {
+                            "name": "Wrapped Ether",
+                            "symbol": "WETH",
+                            "address": "0x4200000000000000000000000000000000000006",
+                            "image_url": "https://dd.dexscreener.com/ds-data/tokens/base/0x4200000000000000000000000000000000000006.png"
+                        }
+                    ],
+                    "pair_creation_date": "2025-01-18T09:37:17"
+                }
+            ]
+        },
+        {
+            "TokenName": "Official Trump - gettrumpmemes.com",
+            "Symbol": "TRUMP",
+            "TokenAge": "",
+            "TokenLogo": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x172e9d1a080954ea993d609783ad311d6795776a.png",
+            "MarketCap": 1540,
+            "Mentions24h": 0,
+            "VolumeChange": 0,
+            "PriceChange24h": 0,
+            "category": "N/A",
+            "date_added": "N/A",
+            "date_launched": "2025-01-18T18:16:55",
+            "max_supply": "N/A",
+            "circulating_supply": "N/A",
+            "total_supply": "N/A",
+            "infinite_supply": false,
+            "num_market_pairs": 1,
+            "cmc_rank": "N/A",
+            "chain_id": "Pulsechain",
+            "platform": "Pulsex",
+            "market_cap_dominance": 0,
+            "description": "N/A",
+            "tags": [],
+            "urls": {},
+            "contracts": [
+                {
+                    "address": "0x172E9D1a080954EA993D609783AD311D6795776a",
+                    "chain": "Pulsechain"
+                }
+            ],
+            "token_pairs_info": [
+                {
+                    "pair_address": "0x5E4e1489Ff4A87F1a242538b22A10e8027811856",
+                    "pair_name": "Official Trump - gettrumpmemes.com / Wrapped Pulse",
+                    "price_in_usd": "0.000001545",
+                    "volume_h24": null,
+                    "market_cap_in_usd": "1540",
+                    "fdv_in_usd": "1540",
+                    "network": {
+                        "name": "Pulsechain",
+                        "image_url": null
+                    },
+                    "dex": {
+                        "name": "Pulsex",
+                        "image_url": null
+                    },
+                    "tokens": [
+                        {
+                            "name": "Official Trump - gettrumpmemes.com",
+                            "symbol": "TRUMP",
+                            "address": "0x172E9D1a080954EA993D609783AD311D6795776a",
+                            "image_url": "https://dd.dexscreener.com/ds-data/tokens/pulsechain/0x172e9d1a080954ea993d609783ad311d6795776a.png"
+                        },
+                        {
+                            "name": "Wrapped Pulse",
+                            "symbol": "WPLS",
+                            "address": "0xA1077a294dDE1B09bB078844df40758a5D0f9a27",
+                            "image_url": "Unknown"
+                        }
+                    ],
+                    "pair_creation_date": "2025-01-18T18:16:55"
+                }
+            ]
+        },
+        {
+            "TokenName": "OFFICIAL TRUMP",
+            "Symbol": "TRUMP",
+            "TokenAge": "",
+            "TokenLogo": "https://dd.dexscreener.com/ds-data/tokens/bsc/0x268a494db4a3e24120ff0502a3726f31f6401c91.png",
+            "MarketCap": 25978,
+            "Mentions24h": 0,
+            "VolumeChange": 0,
+            "PriceChange24h": 0,
+            "category": "N/A",
+            "date_added": "N/A",
+            "date_launched": "2025-01-19T01:31:41",
+            "max_supply": "N/A",
+            "circulating_supply": "N/A",
+            "total_supply": "N/A",
+            "infinite_supply": false,
+            "num_market_pairs": 1,
+            "cmc_rank": "N/A",
+            "chain_id": "Bsc",
+            "platform": "Pancakeswap",
+            "market_cap_dominance": 0,
+            "description": "N/A",
+            "tags": [],
+            "urls": {},
+            "contracts": [
+                {
+                    "address": "0x268A494db4A3e24120fF0502A3726F31f6401C91",
+                    "chain": "Bsc"
+                }
+            ],
+            "token_pairs_info": [
+                {
+                    "pair_address": "0x8cb02364f3Efe968a184BBBAEEb237d15f1BB331",
+                    "pair_name": "OFFICIAL TRUMP / Wrapped BNB",
+                    "price_in_usd": "0.00002597",
+                    "volume_h24": null,
+                    "market_cap_in_usd": "25978",
+                    "fdv_in_usd": "25978",
+                    "network": {
+                        "name": "Bsc",
+                        "image_url": null
+                    },
+                    "dex": {
+                        "name": "Pancakeswap",
+                        "image_url": null
+                    },
+                    "tokens": [
+                        {
+                            "name": "OFFICIAL TRUMP",
+                            "symbol": "TRUMP",
+                            "address": "0x268A494db4A3e24120fF0502A3726F31f6401C91",
+                            "image_url": "https://dd.dexscreener.com/ds-data/tokens/bsc/0x268a494db4a3e24120ff0502a3726f31f6401c91.png"
+                        },
+                        {
+                            "name": "Wrapped BNB",
+                            "symbol": "WBNB",
+                            "address": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+                            "image_url": "Unknown"
+                        }
+                    ],
+                    "pair_creation_date": "2025-01-19T01:31:41"
+                }
+            ]
+        },
+        {
+            "TokenName": "Official Trump",
+            "Symbol": "TRUMP",
+            "TokenAge": "",
+            "TokenLogo": "https://dd.dexscreener.com/ds-data/tokens/base/0x532ff4b9d849837834716e1b35b24537d0efac57.png",
+            "MarketCap": 9585,
+            "Mentions24h": 0,
+            "VolumeChange": 653998.14,
+            "PriceChange24h": 0,
+            "category": "N/A",
+            "date_added": "N/A",
+            "date_launched": "2025-01-19T07:46:49",
+            "max_supply": "N/A",
+            "circulating_supply": "N/A",
+            "total_supply": "N/A",
+            "infinite_supply": false,
+            "num_market_pairs": 1,
+            "cmc_rank": "N/A",
+            "chain_id": "Base",
+            "platform": "Uniswap",
+            "market_cap_dominance": 0,
+            "description": "N/A",
+            "tags": [],
+            "urls": {},
+            "contracts": [
+                {
+                    "address": "0x532FF4b9D849837834716e1b35B24537D0eFaC57",
+                    "chain": "Base"
+                }
+            ],
+            "token_pairs_info": [
+                {
+                    "pair_address": "0x1e03239d41cd3d4213C50768BF229A82c3A4Fd04",
+                    "pair_name": "Official Trump / Wrapped Ether",
+                    "price_in_usd": "0.000009584",
+                    "volume_h24": 653998.14,
+                    "market_cap_in_usd": "9585",
+                    "fdv_in_usd": "9585",
+                    "network": {
+                        "name": "Base",
+                        "image_url": null
+                    },
+                    "dex": {
+                        "name": "Uniswap",
+                        "image_url": null
+                    },
+                    "tokens": [
+                        {
+                            "name": "Official Trump",
+                            "symbol": "TRUMP",
+                            "address": "0x532FF4b9D849837834716e1b35B24537D0eFaC57",
+                            "image_url": "https://dd.dexscreener.com/ds-data/tokens/base/0x532ff4b9d849837834716e1b35b24537d0efac57.png"
+                        },
+                        {
+                            "name": "Wrapped Ether",
+                            "symbol": "WETH",
+                            "address": "0x4200000000000000000000000000000000000006",
+                            "image_url": "https://dd.dexscreener.com/ds-data/tokens/base/0x4200000000000000000000000000000000000006.png"
+                        }
+                    ],
+                    "pair_creation_date": "2025-01-19T07:46:49"
+                }
+            ]
+        }
+    ],
+    "SOL": [
+        {
+            "TokenName": "Small or Large?",
+            "Symbol": "SOL",
+            "TokenAge": "",
+            "TokenLogo": "https://dd.dexscreener.com/ds-data/tokens/solana/A9fHuQNxgfdiP5FxN6xXVCwbNhSfhXfYY6vnnBUrpump.png",
+            "MarketCap": 80096.98,
+            "Mentions24h": 0,
+            "VolumeChange": 166638.3,
+            "PriceChange24h": 0,
+            "category": "N/A",
+            "date_added": "N/A",
+            "date_launched": "2025-02-03T18:58:56",
+            "max_supply": "N/A",
+            "circulating_supply": "N/A",
+            "total_supply": "N/A",
+            "infinite_supply": false,
+            "num_market_pairs": 1,
+            "cmc_rank": "N/A",
+            "chain_id": "Solana",
+            "platform": "Pumpfun",
+            "market_cap_dominance": 0,
+            "description": "N/A",
+            "tags": [],
+            "urls": {},
+            "contracts": [
+                {
+                    "address": "A9fHuQNxgfdiP5FxN6xXVCwbNhSfhXfYY6vnnBUrpump",
+                    "chain": "Solana"
+                }
+            ],
+            "token_pairs_info": [
+                {
+                    "pair_address": "8XDcgcELHVPxmzmCnFXyBbDDK7McfbJj5pMta1uaTsLb",
+                    "pair_name": "Small or Large? / Solana",
+                    "price_in_usd": "0.00008009",
+                    "volume_h24": 166638.3,
+                    "market_cap_in_usd": "80096.979999999995925463736057281494140625",
+                    "fdv_in_usd": "80096.979999999995925463736057281494140625",
+                    "network": {
+                        "name": "Solana",
+                        "image_url": null
+                    },
+                    "dex": {
+                        "name": "Pumpfun",
+                        "image_url": null
+                    },
+                    "tokens": [
+                        {
+                            "name": "Small or Large?",
+                            "symbol": "SOL",
+                            "address": "A9fHuQNxgfdiP5FxN6xXVCwbNhSfhXfYY6vnnBUrpump",
+                            "image_url": "https://dd.dexscreener.com/ds-data/tokens/solana/A9fHuQNxgfdiP5FxN6xXVCwbNhSfhXfYY6vnnBUrpump.png"
+                        },
+                        {
+                            "name": "Solana",
+                            "symbol": "SOL",
+                            "address": "So11111111111111111111111111111111111111112",
+                            "image_url": "Unknown"
+                        }
+                    ],
+                    "pair_creation_date": "2025-02-03T18:58:56"
+                }
+            ]
+        },
+        {
+            "TokenName": "OFFICIAL SOLANA",
+            "Symbol": "SOL",
+            "TokenAge": "",
+            "TokenLogo": "https://dd.dexscreener.com/ds-data/tokens/solana/CeoaUrYvmrRfSA7GiMnmv99R6Axmb2w8q2iJXkyUpump.png",
+            "MarketCap": 104947.01,
+            "Mentions24h": 0,
+            "VolumeChange": 22916.43,
+            "PriceChange24h": 0,
+            "category": "N/A",
+            "date_added": "N/A",
+            "date_launched": "2025-01-21T22:37:09",
+            "max_supply": "N/A",
+            "circulating_supply": "N/A",
+            "total_supply": "N/A",
+            "infinite_supply": false,
+            "num_market_pairs": 1,
+            "cmc_rank": "N/A",
+            "chain_id": "Solana",
+            "platform": "Pumpfun",
+            "market_cap_dominance": 0,
+            "description": "N/A",
+            "tags": [],
+            "urls": {},
+            "contracts": [
+                {
+                    "address": "CeoaUrYvmrRfSA7GiMnmv99R6Axmb2w8q2iJXkyUpump",
+                    "chain": "Solana"
+                }
+            ],
+            "token_pairs_info": [
+                {
+                    "pair_address": "93vwSLsZq9n7hZLdi22JnG1ZR5ydPXGTpMjMGbzQRvem",
+                    "pair_name": "OFFICIAL SOLANA / Solana",
+                    "price_in_usd": "0.0001049",
+                    "volume_h24": 22916.43,
+                    "market_cap_in_usd": "104947.009999999994761310517787933349609375",
+                    "fdv_in_usd": "104947.009999999994761310517787933349609375",
+                    "network": {
+                        "name": "Solana",
+                        "image_url": null
+                    },
+                    "dex": {
+                        "name": "Pumpfun",
+                        "image_url": null
+                    },
+                    "tokens": [
+                        {
+                            "name": "OFFICIAL SOLANA",
+                            "symbol": "SOL",
+                            "address": "CeoaUrYvmrRfSA7GiMnmv99R6Axmb2w8q2iJXkyUpump",
+                            "image_url": "https://dd.dexscreener.com/ds-data/tokens/solana/CeoaUrYvmrRfSA7GiMnmv99R6Axmb2w8q2iJXkyUpump.png"
+                        },
+                        {
+                            "name": "Solana",
+                            "symbol": "SOL",
+                            "address": "So11111111111111111111111111111111111111112",
+                            "image_url": "Unknown"
+                        }
+                    ],
+                    "pair_creation_date": "2025-01-21T22:37:09"
+                }
+            ]
+        }
+    ]
+}  how convert  this to normal object 

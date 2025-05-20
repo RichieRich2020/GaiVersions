@@ -1,207 +1,357 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Autocomplete } from "@mui/material";
+import { Autocomplete, Box, Typography, Skeleton } from "@mui/material";
 import debounce from "lodash/debounce";
 import { CTextField } from "./CTextField";
 import TokenCard from "./TokenCard";
-import axios from "axios";
 
 // OptionType interface
 export interface OptionType {
+  category: string;
   cashtag: string;
   coin_info: any;
   name: string;
+  symbol?: string;
+  token_address?: string;
+  token_pairs_info?: any[];
 }
-
-// Fetch search options
-const getOptionsAsync = async (query: string): Promise<OptionType[]> => {
-  if (!query) return [];
-  try {
-    const response = await fetch(
-      `https://api.marwalproduction.com/search?keyword=${query}`
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
-    }
-    const data = await response.json();
-    return data || [];
-  } catch (error) {
-    console.error("Error fetching options:", error);
-    return [];
-  }
-};
 
 interface SearchProps {
   setPage: (page: string) => void;
   setSearchedData: (data: any | null) => void;
+  searchLoading: boolean;
+  isSearchLoading: (value: boolean) => void;
+  setSearchedDatabool: (value: boolean) => void;
+  inputRef?: React.RefObject<HTMLInputElement>;
 }
-export default function Search({setPage,setSearchedData}: SearchProps) {
-  // State definitions
+
+export default function Search({
+  setPage,
+  setSearchedData,
+  searchLoading,
+  isSearchLoading,
+  setSearchedDatabool,
+  inputRef
+}: SearchProps) {
   const [options, setOptions] = useState<OptionType[]>([]);
   const [value, setValue] = useState<OptionType | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [poolAddress, setPoolAddress] = useState<string | null>(null);
-  const [networkId, setNetworkId] = useState<string | null>(null);
-  const [formattedData, setFormattedData] = useState<string | null>(null);
-  const [poolInfo, setPoolInfo] = useState<any>(null); // New state for pool info
+  const [apiCalled, setApiCalled] = useState<Number>(0);
+  const [showPreviousResults, setShowPreviousResults] = useState<boolean>(false);
+  const [searchTriggered, setSearchTriggered] = useState<boolean>(false);
+  const [previousResultOptions, setPreviousResultOptions] = useState<any>([]);
 
-  // Define default network (e.g., Ethereum)
-  const [network, setNetwork] = useState<string>("Ethereum");
+  const previousResults = ["xpr", "BTC", "sol", "nitro"];
 
-  // Merged and optimized function
+  const getOptionsAsync = async (query: string): Promise<any[]> => {
+    if (!query) return [];
+    // setShowPreviousResults(true);
+    setIsLoading(true);
+    try {
+      // Remove $ from the query if it exists
+      const cleanQuery = query.startsWith('$') ? query.substring(1) : query;
+      
+      const response = await fetch(
+        `https://api.marwalproduction.com/search?query=${cleanQuery}`
+      );
+      if (!response.ok) throw new Error("Failed to fetch data");
+      const data = await response.json();
+
+      return data || [];
+    } catch (error) {
+      console.error("Error fetching options:", error);
+      return [];
+    }finally{
+      setIsLoading(false);
+      // setShowPreviousResults(false);
+    }
+  };
+
   const getOptionsAndFetchPool = useCallback(
-    debounce(async (query: string, network: string) => {
+    debounce(async (query: string) => {
+      // If the query is empty or too short, reset and return
+      if (!query || query.length <= 2) {
+        setApiCalled(0);
+        return;
+      }
+      setOptions([]);
       setIsLoading(true);
+      setApiCalled(2);
       try {
-        // Fetch options asynchronously
-        const newOptions = await getOptionsAsync(query);
-
-        // Filter options based on platform name matching the network
-        const filteredOptions = newOptions.filter((option: any) =>
-          option.coin_info.contracts[0]?.platform_coin_name
-            ?.toLowerCase()
-            .includes(network.toLowerCase())
-        );
-        setOptions(newOptions);
-        setIsLoading(false);
-
-        // If valid options are found, attempt to fetch pool address
-        if (filteredOptions.length > 0) {
-          const contractAddress =
-            filteredOptions[0]?.coin_info.contracts[0]?.contract_address;
-
-          if (contractAddress) {
-            setLoading(true);
-            setError(null);
-
-            // Fetch network details
-            const networksResponse = await axios.get(
-              "https://api.geckoterminal.com/api/v2/networks"
-            );
-            const networks = networksResponse.data?.data || [];
-
-            // Find the matching network by name
-            const networkMatch = networks.find((n: any) =>
-              n.attributes.name.toLowerCase().includes(network.toLowerCase())
-            );
-
-            if (!networkMatch) throw new Error("Network not found");
-
-            const networkId = networkMatch.id;
-            setNetworkId(networkId);
-
-            // Fetch token info and pool address
-            const response = await axios.get(
-              `https://api.geckoterminal.com/api/v2/networks/${networkId}/tokens/${contractAddress}`
-            );
-            const topPool =
-              response.data?.data?.relationships?.top_pools?.data?.[0]?.id;
-
-            setFormattedData(response.data?.data?.attributes.symbol);
-
-            // Extract pool address if available
-            if (topPool) {
-              const extractedAddress = topPool.split("_")[1];
-              setPoolAddress(extractedAddress);
-
-              // ✅ Fetch pool info after getting pool address
-              const poolInfoResponse = await axios.get(
-                `https://api.geckoterminal.com/api/v2/networks/${networkId}/pools/${extractedAddress}/info`
-              );
-              setPoolInfo(poolInfoResponse.data);
-              console.log("Pool Info:", poolInfoResponse.data);
-            } else {
-              throw new Error("No top pool found");
-            }
-          }
-        } else {
-          throw new Error("No matching options found");
-        }
+        const newOptions: any = await getOptionsAsync(query);
+        console.log(newOptions, "newOptions");
+        setOptions(newOptions.data || []);
       } catch (err: any) {
         setError(err.message || "Failed to fetch data");
       } finally {
-        setLoading(false);
+        setIsLoading(false);
+        
       }
     }, 300),
-    [network]
+    []
   );
 
-  // Trigger search and pool fetch when query changes
   useEffect(() => {
-    if (searchQuery) {
-      getOptionsAndFetchPool(searchQuery, network);
+    const handleEnter = (e: KeyboardEvent) => {
+      if (e.key === "Enter" && searchQuery.trim()) {
+        getOptionsAndFetchPool(searchQuery);
+        setShowPreviousResults(false);
+        setSearchTriggered(true); // Show "no options" only on Enter
+      }
+    };
+
+    window.addEventListener("keydown", handleEnter);
+    return () => window.removeEventListener("keydown", handleEnter);
+  }, [searchQuery, getOptionsAndFetchPool]);
+
+  // Handle input changes to properly process queries with $ or token addresses
+  useEffect(() => {
+    if (searchQuery.trim() && searchQuery.length > 2) {
+      getOptionsAndFetchPool(searchQuery);
     }
-  }, [searchQuery, network, getOptionsAndFetchPool]);
+  }, [searchQuery, getOptionsAndFetchPool]);
+
+ 
+  
+  useEffect(() => {
+    const allPrevious = JSON.parse(localStorage.getItem("PreviousSearched") || "[]");
+    const filtered = allPrevious
+      .reverse() 
+      .filter((ele: any) => {
+        if (!ele?.symbol) return false;
+        
+        // Handle $ prefix in searchQuery
+        const searchTerm = searchQuery.startsWith('$') 
+          ? searchQuery.substring(1).toLowerCase() 
+          : searchQuery.toLowerCase();
+          
+        return ele.symbol.toLowerCase().startsWith(searchTerm);
+      })
+      .slice(0, 5); // limit to top 5
+      
+    console.log(filtered, "previousResultOptions");
+    // setPreviousResultOptions(filtered);
+  }, [searchQuery]);
+
+  console.log(isLoading, "isLoading");
+  console.log(apiCalled , options.length==0,"wedw");
+  const SkeletonLoader = () => (
+    <Box sx={{ p: 1 }}>
+      {[1, 2, 3].map((item) => (
+        <Box
+          key={item}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            mb: 1,
+            p: 1,
+            bgcolor: "rgba(255, 255, 255, 0.05)",
+            borderRadius: "8px"
+          }}
+        >
+          <Skeleton
+            variant="circular"
+            width={40}
+            height={40}
+            sx={{ bgcolor: "rgba(255, 255, 255, 0.1)" }}
+          />
+          <Box sx={{ ml: 1, width: "100%" }}>
+            <Skeleton
+              variant="text"
+              width="60%"
+              sx={{ bgcolor: "rgba(255, 255, 255, 0.1)" }}
+            />
+            <Skeleton
+              variant="text"
+              width="80%"
+              sx={{ bgcolor: "rgba(255, 255, 255, 0.1)" }}
+            />
+          </Box>
+        </Box>
+      ))}
+    </Box>
+  );
 
   return (
-    <>
-      <Autocomplete
-        options={options}
-        value={value}
-        onChange={(event, newValue) => setValue(newValue)}
-        onInputChange={(event, newValue) => setSearchQuery(newValue)}
-        getOptionLabel={(option) => option.cashtag || ""}
-        renderInput={(params) => (
-          <CTextField params={params} selectedOption={value} />
-        )}
-        renderOption={(props, option) => (
+    <Autocomplete
+      options={showPreviousResults ? previousResultOptions : options}
+      value={value}
+      onChange={ async (event, newValue) => {
+        const allPrevious = JSON.parse(localStorage.getItem("PreviousSearched") || "[]");
+        const isDuplicate = allPrevious.some(
+          (item:any) => item?.token_address === newValue?.token_address
+        );
+        
+        if (!isDuplicate && newValue) {
+          localStorage.setItem("PreviousSearched", JSON.stringify([...allPrevious, newValue]));
+        }
+        
+        if (newValue) {
+          console.log(newValue, "newValue");
+        
+          setPage("Tweet");
+          setSearchedDatabool(true);
+          isSearchLoading(true);
+        
+          try {
+            setSearchedData([]);
+        
+            // Check whether to use coin_id or token_address
+            const queryParam = newValue.id
+              ? `coin_id=${newValue.id}`
+              : `token_address=${newValue.token_address}`;
+        
+            const response = await fetch(
+              `${process.env.GAI_VERSION_1}/deep_search?${queryParam}`
+            );
+        
+            if (!response.ok) {
+              throw new Error("Failed to fetch cashtag info");
+            }
+        
+            const data = await response.json();
+            
+            console.log(data, "dataaa")
+            let result = data["coin"] ? [{
+              cashtag: data.coin[0].symbol,
+              count_mentions_last_24h: data.coin[0].count_mentions_last_24h,
+              mentions_by_influencers_24h: data.coin[0].mentions_by_influencers_24h,
+              coins: data.coin
+            }] : [{
+              cashtag: data.token[0].token_symbol,
+              count_mentions_last_24h: data.token[0].count_mentions_last_24h,
+              mentions_by_influencers_24h: data.token[0].mentions_by_influencers_24h,
+              tokens_pairs: data.token
+            }]
+            
+            setSearchedData(result);
+          } catch (error) {
+            console.error("Error fetching data:", error);
+            setSearchedData([]);
+            setSearchedDatabool(false);
+          } finally {
+            isSearchLoading(false);
+          }
+        }
+        setShowPreviousResults(false);
+      }}
+      onInputChange={(event, newValue) => {
+        setSearchQuery(newValue);
+        // setSearchTriggered(false);
+        setApiCalled(3);
+        if (newValue=="") {
+          setShowPreviousResults(true);
+        } else {
+          setShowPreviousResults(false);
+        }
+      }}
+      onFocus={() => {
+        if (searchQuery.trim() === "") {
+          setShowPreviousResults(true);
+        }
+      }}
+      onBlur={() => {
+        setShowPreviousResults(false);
+      }}
+      getOptionLabel={(option: any) => {
+        if (typeof option === "string") return option;
+        if (!option || typeof option !== "object") return "";
+        
+        const symbol = option?.symbol || "";
+        const name = option?.name || "";
+        
+        // Add $ prefix for display if it's a token or coin
+        const displaySymbol = (option.category === "token" || option.category === "coin") && !symbol.startsWith('$') 
+          ? `$${symbol}` 
+          : symbol;
+          
+        return `${displaySymbol}${name ? ` (${name})` : ""}`.trim();
+      }}
+      renderInput={(params) => (
+        <CTextField
+          params={params}
+          selectedOption={value}
+          inputRef={inputRef}
+        />
+      )}
+      renderOption={(props, option) => {
+        const tokenName = option?.name || "";
+        const isPreviouslySearched = previousResults.includes(
+          tokenName.toLowerCase()
+        );
+
+        console.log(option, "optionoption");
+        
+        return (
           <li
             {...props}
-            key={`${option.coin_info.contracts[0]?.contract_address}-${option.coin_info.name}`}
+            key={option?.token_address || option?.id || tokenName}
             style={{
-              backgroundColor: "#0B0B0B",
-              color: "white",
+              color: "black",
               padding: 0,
-             
+              backgroundColor: "#0B0B0B"
             }}
-            onClick={
-              ()=>{
-                setPage("Tweet");
-                setSearchedData(()=>{
-                  return [option]
-                });
-              }
-            }
           >
-            {loading ? (
-             ""
-            ) : (
-              poolInfo && (
-                <TokenCard
-                  PairIcon={poolInfo?.data[1]?.attributes?.image_url}
-                  tokenAdd={option.coin_info.contracts[0]?.contract_address}
-                  tokenName={option.coin_info.name}
-                  pair={`${poolInfo?.data[0]?.attributes?.symbol} / ${poolInfo?.data[1]?.attributes?.symbol}`}
-                  exchange={""}
-                  network={option.coin_info.contracts[0]?.platform_name || ""}
-                  price={option.coin_info.price}
-                  priceChange={option.coin_info.per_chg_24hr}
-                  marketCap={option.coin_info.market_cap}
-                  volume={option.coin_info.volume || 0}
-                  liquidity={0}
-                  age={option.coin_info.date_added}
-                  tokenIcon={option.coin_info.logo}
-                  
-                />
-              )
-            )}
+            <TokenCard option={option} />
           </li>
-        )}
-        loading={isLoading}
-        componentsProps={{
-          paper: {
-            sx: {
-              backgroundColor: "#0B0B0B",
-              color: "white", // Optional: Text color inside the dropdown
+        );
+      }}
+      filterOptions={(x) => x} // Disable built-in filtering to use server-side search
+      loading={isLoading}
+      loadingText={<SkeletonLoader />}
+      
+      noOptionsText={
+        apiCalled==2 && options.length == 0 && searchQuery!=""&& (
+          <Box
+            sx={{
+              p: 2,
+              textAlign: "center",
+              backgroundColor: "#1a1b23",
+              borderRadius: "0 0 8px 8px",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              borderTop: "none",
+              boxShadow: "0 4px 8px rgba(0,0,0,0.2)"
+            }}
+          >
+            <Typography
+              variant="subtitle1"
+              sx={{ color: "white", fontWeight: 500 }}
+            >
+            No tokens found for "<strong>{searchQuery}</strong>"
+            </Typography>
+          </Box>
+        ) }
+
+      componentsProps={{
+        paper: {
+          sx: {
+            backgroundColor: "#1a1b23",
+            color: "white",
+            borderRadius: "0 0 8px 8px",
+            marginTop: "-1px",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            borderTop: "none",
+            boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+            "& .MuiAutocomplete-listbox": {
+              scrollbarWidth: "none",
+              "&::-webkit-scrollbar": {
+                display: "none"
+              },
+              "-ms-overflow-style": "none",
+              padding: "0"
             },
-          },
-        }}
-        sx={{
-          width: "100%",
-        }}
-      />
-    </>
+            "& .MuiAutocomplete-option": {
+              backgroundColor: "transparent",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.1)"
+              },
+              padding: "0"
+            }
+          }
+        }
+      }}
+      sx={{ width: "100%" }}
+    />
   );
 }

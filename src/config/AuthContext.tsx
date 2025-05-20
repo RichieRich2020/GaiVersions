@@ -1,14 +1,25 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React from "react"
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   user: TwitterUser | null;
-  referralToken: string | null;
   login: (data: TwitterUser, token: string, expiry: string, referral?: string) => void;
   logout: () => void;
+  setUser: (user: TwitterUser | null) => void;
+  setTokendata: (data: any | null) => void;
+  tokendata:any
+  // referralToken: string | null;
+  // setReferralToken: (token: string | null) => void;
 }
 
 export interface TwitterUser {
+  jwt_token(jwt_token: any, username: string): unknown;
+  referral_code: ReactNode;
+  referral_points: unknown;
+  referralToken: ReactNode;
+  usageTime: string;
+  // referralToken: ReactNode;
   id: string;
   name: string;
   username: string;
@@ -21,22 +32,28 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<TwitterUser | null>(null);
-  const [referralToken, setReferralToken] = useState<string | null>(null);
-
+  // const [referralToken, setReferralToken] = useState<string | null>(null);
+ const [tokendata, setTokendata] = useState<any>();
   useEffect(() => {
     const storedToken = localStorage.getItem("jwt_token");
-    const storedUser = localStorage.getItem("user_data");
-    const storedReferral = localStorage.getItem("referral_token");
+    const storedUser:any = localStorage.getItem("user_data");
+    // const storedReferral = localStorage.getItem("referral_token");
 
-    if (storedToken && storedUser) {
-      setUser(JSON.parse(storedUser));
+  
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
       setIsAuthenticated(true);
-    }
+  
+    // chrome.runtime.sendMessage({
+    //   action: "storeUserData",
+    //   payload: {
+    //     token: storedToken,
+    //   },
+    // });
 
-    console.log(storedReferral,"storedReferral");
-    if (storedReferral) {
-      setReferralToken(storedReferral);
-    }
+    // if (storedReferral) {
+    //   setReferralToken(storedReferral);
+    // }
   }, []);
 
   const login = (data: TwitterUser, token: string, expiry: string, referral?: string) => {
@@ -46,23 +63,33 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsAuthenticated(true);
     localStorage.setItem("jwt_token", token);
     localStorage.setItem("user_data", JSON.stringify(data));
+    // chrome.storage.local.set({ 
+    //   isAuthenticated: true,
+    //   user_data: JSON.stringify(data),
+    //   jwt_token: token
+    // });
+  
 
-    if (referral) {
-        localStorage.setItem("referral_token", referral);
-    }
-};
+    // if (referral) {
+    //   setReferralToken(referral);
+    //   localStorage.setItem("referral_token", referral);
+    // }
+  };
 
   const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
-    setReferralToken(null);
+    // setReferralToken(null);
     localStorage.removeItem("jwt_token");
     localStorage.removeItem("user_data");
-    localStorage.removeItem("referral_token");
+    localStorage.removeItem("isFirstVisit")
+    // chrome.storage.local.set({ isAuthenticated: false });
+    // chrome.storage.local.remove(['jwt_token', 'user_data']);
+    // localStorage.removeItem("referral_token");
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, referralToken, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout,setUser,setTokendata ,tokendata}}>
       {children}
     </AuthContext.Provider>
   );

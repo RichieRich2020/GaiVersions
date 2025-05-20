@@ -9,25 +9,29 @@ export const CTextField: React.FC<
   TextFieldProps & {
     params: AutocompleteRenderInputParams;
     selectedOption: OptionType | null;
+    inputRef?: React.RefObject<HTMLInputElement>;
   }
-> = ({ params, selectedOption, ...other }) => {
+> = ({ params, inputRef, selectedOption, ...other }) => {
   const [value, setValue] = useState(params.inputProps.value as string);
   const [isFocus, setIsFocus] = useState<boolean>(false);
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    params.inputProps.onChange?.(event);
-    setValue(event.target.value);
-  };
-
+  
   const hasMountedRef = useRef<boolean>(false);
 
   useEffect(() => {
-    if (hasMountedRef.current) {
-      setValue("");
-    } else {
-      hasMountedRef.current = true;
-    }
-  }, [selectedOption]);
+    hasMountedRef.current = true;
+  }, []);
+
+  // Handle the input change event
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // Get the current value from the event
+    const currentValue = event.target.value;
+    
+    // Update the state with the current value
+    setValue(currentValue);
+    
+    // Call the original onChange handler with the event
+    params.inputProps.onChange?.(event);
+  };
 
   const handleInputFocus = (event: React.FocusEvent<HTMLInputElement>) => {
     params.inputProps.onFocus?.(event);
@@ -41,49 +45,48 @@ export const CTextField: React.FC<
 
   return (
     <Box sx={{ position: "relative" }}>
-     <TextField
-  {...omit(params, "inputProps")}
-  {...other}
-  sx={{
-    width: "110%",
-    color: "white",
-    border: "none",
-    "& fieldset": {
-      border: "none !important", // Remove border
-    },
-    "&:hover fieldset": {
-      border: "none !important", // Prevent border on hover
-    },
-    "&.Mui-focused fieldset": {
-      border: "none !important", // Prevent border on focus
-    },
-    "& input": {
-      color: "white", // Set text color to white
-    },
-    "&::placeholder": {
-      color: "rgba(255, 255, 255, 0.7)", // Placeholder color
-    }
-  }}
-  inputProps={{
-    ...omit(params.inputProps, ["value", "onChange", "placeholder"]),
-    value,
-    onChange: handleInputChange,
-    onBlur: handleInputBlur,
-    onFocus: handleInputFocus,
-    placeholder: "Search", // ✅ Add placeholder here
-    style: { color: "white" }, // Text color for input
-  }}
-  InputLabelProps={{
-    shrink: isFocus || !!selectedOption,
-    style: {
-      color: "white",
-      backgroundColor: "red",
-    }, // Text color for label
-  }}
-/>
-
-
-
+      <TextField
+        {...omit(params, "inputProps")}
+        {...other}
+        inputRef={inputRef}
+        sx={{
+          width: "100%",
+          color: "white",
+          border: "none",
+          "& fieldset": {
+            border: "none !important", // Remove border
+          },
+          "&:hover fieldset": {
+            border: "none !important", // Prevent border on hover
+          },
+          "&.Mui-focused fieldset": {
+            border: "none !important", // Prevent border on focus
+          },
+          "& input": {
+            color: "white", // Set text color to white
+          },
+          "&::placeholder": {
+            color: "rgba(255, 255, 255, 0.7)", // Placeholder color
+          }
+        }}
+        inputProps={{
+          ...omit(params.inputProps, ["value", "onChange", "placeholder"]),
+          value,
+          onChange: handleInputChange,
+          onBlur: handleInputBlur,
+          onFocus: handleInputFocus,
+          placeholder: "Search for tokens (e.g. BTC, $SOL, token address)",
+          style: { color: "white" }, // Text color for input
+          'aria-label': 'Search input',
+        }}
+        InputLabelProps={{
+          shrink: isFocus || !!selectedOption,
+          style: {
+            color: "white",
+            backgroundColor: "transparent",
+          },
+        }}
+      />
 
       {!isFocus && selectedOption && (
         <Box
@@ -93,16 +96,13 @@ export const CTextField: React.FC<
             bottom: 0,
             textAlign: "left",
             color: "white",
-            // padding: "4px",
+            transition: 'all 0.3s ease',
             borderRadius: "4px",
             boxShadow: 1,
-            // border: "2px solid red",
-            backgroundColor:"#0B0B0B"
-           
+            backgroundColor: "#0B0B0B"
           }}
         >
-          {/* <div></div> */}
-          {/* <div>{selectedOption.year}</div> */}
+          {/* Selected option display */}
         </Box>
       )}
     </Box>

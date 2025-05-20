@@ -119,7 +119,7 @@ const Navbar: React.FC<MidnavbarProps> = ({setPage, page}) => {
     {/* <IoMdHome /> */}
       <Typography
         variant="subtitle1"
-        sx={{ color: "#FFFFFF", fontSize: "0.9rem"}}
+        sx={{ color: "#FFFFFF", fontSize: "0.9rem" }}
       >
         GAI
       </Typography>
@@ -159,7 +159,9 @@ const Navbar: React.FC<MidnavbarProps> = ({setPage, page}) => {
           </IconButton>
         </Tooltip>
         <Menu
-          sx={{ mt: "45px" }}
+          sx={{ mt: "45px",  "& .MuiPaper-root": {
+            backgroundColor: "#090909", // Change background to #090909
+          },}}
           id="menu-appbar"
           anchorEl={anchorElUser}
           anchorOrigin={{
@@ -175,7 +177,10 @@ const Navbar: React.FC<MidnavbarProps> = ({setPage, page}) => {
           onClose={handleCloseUserMenu}
         >
           {settings.map((setting) => (
-            <MenuItem key={setting.title} onClick={handleCloseUserMenu}>
+            <MenuItem key={setting.title} onClick={handleCloseUserMenu} sx={{
+        fontWeight:"bold"      ,
+ color:"White"
+            }}>
               <Typography sx={{ textAlign: "center" }} onClick={setting.onclick}>{setting.title}</Typography>
             </MenuItem>
           ))}
@@ -186,3 +191,127 @@ const Navbar: React.FC<MidnavbarProps> = ({setPage, page}) => {
 };
 
 export default Navbar;
+
+
+const exampleData: {
+  cashtag: string;
+  count_mentions_last_24h: number;
+  coins: Array<{
+    id: string;
+    symbol: string;
+    name: string;
+    image_url: string;
+
+    current_price: number;
+    market_cap: number;
+    market_cap_rank: number;
+    fully_diluted_valuation: number;
+    total_volume: number;
+
+    high_24h_price: number;
+    low_24h_price: number;
+    price_change_24h: number;
+    price_change_percentage_24h: number;
+
+    market_cap_change_24h: number;
+    market_cap_change_percentage_24h: number;
+
+    circulating_supply: number;
+    total_supply: number;
+    max_supply: number;
+    price_change_percentage_1h: number;
+
+    inserted_at: string;
+    updated_at: string;
+
+    if_listed: boolean;
+
+    tickers: Array<{
+      base: string;
+      target: string;
+      market: {
+        name: string;
+        identifier: string;
+        has_trading_incentive: boolean;
+      };
+      last: number;
+      volume: number;
+      converted_last: {
+        btc: number;
+        eth: number;
+        usd: number;
+      };
+      converted_volume: {
+        btc: number;
+        eth: number;
+        usd: number;
+      };
+      trust_score: string;
+      bid_ask_spread_percentage: number;
+      timestamp: string;
+      last_traded_at: string;
+      last_fetch_at: string;
+      is_anomaly: boolean;
+      is_stale: boolean;
+      trade_url: string;
+      token_info_url: string | null;
+      coin_id: string;
+      target_coin_id: string;
+    }>;
+
+    token_address?: string;
+    chain_id?: string;
+    token_pairs_info?: Array<{
+      pair_address: string;
+      pair_name: string;
+      price_in_usd: string;
+      volume_h24: number;
+      market_cap_in_usd: string;
+      fdv_in_usd: string;
+      network: {
+        name: string;
+        image_url: string | null;
+      };
+      dex: {
+        name: string;
+        image_url: string | null;
+      };
+      tokens: Array<{
+        name: string;
+        symbol: string;
+        address: string;
+        image_url: string;
+      }>;
+      pair_creation_date: string | null;
+    }>;
+  }>;
+  tokens: Array<{
+    token_address: string;
+    name: string;
+    symbol: string;
+    chain_id: string;
+    token_pairs_info: Array<{
+      pair_address: string;
+      pair_name: string;
+      price_in_usd: string;
+      volume_h24: number;
+      market_cap_in_usd: string;
+      fdv_in_usd: string;
+      network: {
+        name: string;
+        image_url: string | null;
+      };
+      dex: {
+        name: string;
+        image_url: string | null;
+      };
+      tokens: Array<{
+        name: string;
+        symbol: string;
+        address: string;
+        image_url: string;
+      }>;
+      pair_creation_date: string | null;
+    }>;
+  }>;
+}[] = [];

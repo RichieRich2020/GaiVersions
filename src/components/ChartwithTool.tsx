@@ -1,14 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { CandlestickChart } from 'lucide-react';
-import ChartContainer from './ChartContainer';
-import { Box, IconButton, Typography, CircularProgress, Alert, MenuItem, Select } from '@mui/material';
-import { Refresh } from '@mui/icons-material';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import ChartContainer from "./ChartContainer";
+import {
+  Box,
+  IconButton,
+  Typography,
+  CircularProgress,
+  ToggleButtonGroup,
+  ToggleButton,
+  Skeleton,
+  useTheme
+} from "@mui/material";
+import { Refresh } from "@mui/icons-material";
+import ErrorComponent from "./ErrorComponent";
+import { networks } from "./networks";
+
 
 interface ChartwithToolProps {
-  
-  network: string;
-  contract_address: string;
+  selectData: any;
 }
 
 interface OHLCVData {
@@ -17,6 +26,7 @@ interface OHLCVData {
   high: number;
   low: number;
   close: number;
+  volume: number;
 }
 
 interface TweetData {
@@ -28,174 +38,254 @@ interface TweetData {
   timestamp: number;
 }
 
+const timeFrames = ["1m", "5m", "15m", "1h", "4h", "12h", "1d"];
+
 const timeFrameMapping: Record<string, { unit: string; aggregate: number }> = {
-  '1m': { unit: 'minute', aggregate: 1 },
-  '5m': { unit: 'minute', aggregate: 5 },
-  '15m': { unit: 'minute', aggregate: 15 },
-  '1h': { unit: 'hour', aggregate: 1 },
-  '4h': { unit: 'hour', aggregate: 4 },
-  '12h': { unit: 'hour', aggregate: 12 },
-  '1d': { unit: 'day', aggregate: 1 },
+  "1m": { unit: "minute", aggregate: 1 },
+  "5m": { unit: "minute", aggregate: 5 },
+  "15m": { unit: "minute", aggregate: 15 },
+  "1h": { unit: "hour", aggregate: 1 },
+  "4h": { unit: "hour", aggregate: 4 },
+  "12h": { unit: "hour", aggregate: 12 },
+  "1d": { unit: "day", aggregate: 1 }
 };
 
-const ChartwithTool: React.FC<ChartwithToolProps> = ({  network, contract_address }) => {
+const ChartSkeleton = () => {
+  return (
+    <Box
+      sx={{
+        width: "100%",
+        height: "500px",
+        p: 0,
+        backgroundColor: "#121212",
+        position: "relative",
+      }}
+    >
+      <Box display="flex" justifyContent="space-between" p={1}>
+        <Skeleton variant="rounded" width={120} height={24} sx={{ bgcolor: "grey.800" }} />
+        <Box display="flex" gap={1}>
+          <Skeleton variant="rounded" width={80} height={32} sx={{ bgcolor: "grey.800" }} />
+          <Skeleton variant="circular" width={32} height={32} sx={{ bgcolor: "grey.800" }} />
+        </Box>
+      </Box>
+      <Box sx={{ px: 2, mb: 2 }}>
+        <Skeleton variant="rounded" width="60%" height={16} sx={{ mb: 1, bgcolor: "grey.800" }} />
+        <Skeleton variant="rounded" width="40%" height={16} sx={{ bgcolor: "grey.800" }} />
+      </Box>
+      <Box
+        sx={{
+          height: "371px",
+          display: "flex",
+          alignItems: "flex-end",
+          gap: 1,
+          backgroundColor: "#1a1a1a",
+          mx: 2,
+          mb: 2,
+          borderRadius: 1,
+          p: 1,
+        }}
+      >
+        {Array.from({ length: 12 }).map((_, idx) => (
+          <Skeleton
+            key={idx}
+            variant="rounded"
+            width="5%"
+            height={`${50 + Math.random() * 40}%`}
+            sx={{ bgcolor: "grey.800" }}
+          />
+        ))}
+      </Box>
+    </Box>
+  );
+};
+
+const ChartwithTool: React.FC<ChartwithToolProps> = ({ selectData }) => {
+  console.log(selectData,"selectData");
+
   const [data, setData] = useState<OHLCVData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [poolAddress, setPoolAddress] = useState<string | null>(null);
-  const [timeFrame, setTimeFrame] = useState<string>('1m');
+  const [timeFrame, setTimeFrame] = useState<string>("1h");
   const [networkId, setNetworkId] = useState<string | null>(null);
   const [formattedData, setFormattedData] = useState<string | null>(null);
   const [tweetData, setTweetData] = useState<TweetData[] | null>(null);
 
   useEffect(() => {
-    fetchPoolAddress();
-  }, [network, contract_address]);
-
-  useEffect(() => {
-    if (poolAddress && networkId) {
-      fetchData();
+    if (selectData) {
+      fetchChartData();
     }
-  }, [poolAddress, timeFrame, networkId]);
+  }, [selectData, timeFrame]);
 
-  useEffect(() => {
-    if (formattedData) {
-      fetchTweetInfo();
-    }
-  }, [formattedData]);
-
-  const fetchPoolAddress = async () => {
+  useEffect(()=>{
+    fetchTweetInfo();
+  },[])
+  
+  const fetchChartData = async () => {
     setLoading(true);
     setError(null);
+    console.log(selectData,"lkjhgfdssfgh");
+    // const normalize = (str: string | null | undefined) => {
+    //   if (!str) return ""; // or return undefined/null depending on how you handle it
+    //   return str.toLowerCase().replace(/[-_]/g, "");
+    // };
+    // console.log("networks:", networks);
     try {
-      const networksResponse = await axios.get('https://api.geckoterminal.com/api/v2/networks');
-      const networks = networksResponse.data?.data || [];
-      const networkMatch = networks.find((n: any) => n.attributes.name.toLowerCase().includes(network.toLowerCase()));
-      
-      if (!networkMatch) throw new Error('Network not found');
-      
-      const networkId = networkMatch.id;
-      setNetworkId(networkId);
-      
-      const response = await axios.get(`https://api.geckoterminal.com/api/v2/networks/${networkId}/tokens/${contract_address}`);
-      const topPool = response.data?.data?.relationships?.top_pools?.data?.[0]?.id;
-      
-      setFormattedData(response.data?.data?.attributes.symbol);
-      if (topPool) {
-        const extractedAddress = topPool.split('_')[1];
-        setPoolAddress(extractedAddress);
-      } else {
-        throw new Error('No top pool found');
-      }
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch pool address');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchData = async () => {
-    if (!poolAddress || !networkId) return;
-    setLoading(true);
-    setError(null);
-    try {
+   
+      // const networkMatch = networks.find(
+    
+      //   (n: any) =>{
+     
+      //    return  normalize(n?.attributes?.coingecko_asset_platform_id) === normalize(selectData?.pairs?.chain_id)
+      //   }
+        
+      // );
+  
+     
+  
+      // let networkId = networkMatch.id;
+      //  if (!networkMatch){ networkId = selectData?.pairs?.chain_id}
+      // console.log(networkId,"networkId");
       const { unit, aggregate } = timeFrameMapping[timeFrame];
-      const response = await axios.get(
-        `https://api.geckoterminal.com/api/v2/networks/${networkId}/pools/${poolAddress}/ohlcv/${unit}?aggregate=${aggregate}&limit=1000`
+  
+      // Step 2: Fetch OHLCV
+      const ohlcvRes = await axios.get(
+        `https://api.geckoterminal.com/api/v2/networks/${selectData?.pairs?.geckoterminal_network_id}/pools/${selectData?.pairs?.pair_address}/ohlcv/${unit}?aggregate=${aggregate}&limit=1000`
       );
-      const ohlcvData = response.data?.data?.attributes?.ohlcv_list || [];
-      const formattedData = ohlcvData.map((item: number[]) => ({
+      console.log(ohlcvRes,"networkId");
+      const ohlcvList = ohlcvRes.data?.data?.attributes?.ohlcv_list || [];
+  
+      const formatted = ohlcvList.map((item: number[]) => ({
         timestamp: item[0] * 1000,
         open: item[1],
         high: item[2],
         low: item[3],
         close: item[4],
+        volume: item[5]
       }));
-      setData(formattedData);
-      await fetchTweetInfo();
+  
+      // setFormattedData(selectData?.Symbol);
+      setData(formatted);
+  
+      // Step 3: Fetch tweet data
+      // await fetchTweetInfo(selectData?.Symbol);
     } catch (err: any) {
-      setError(err.message || 'Failed to fetch OHLCV data');
+      console.error("Error in fetchChartData:", err);
+      setError(err.message || "Failed to fetch chart data");
+      setData([]);
+      // setFormattedData(null);
     } finally {
       setLoading(false);
     }
   };
+  
 
   const fetchTweetInfo = async () => {
-    if (!formattedData) return;
-    setLoading(true);
-    setError(null);
+    // if (!formattedData) return;
     try {
-      const response = await axios.get(`https://g-ai-backend.onrender.com/tweets_influencers?cashtag=${formattedData}`);
-      const result: TweetData[] = response.data.map((item: any) => ({
-        ...item,
-        timestamp: new Date(item.created_at).getTime(),
+      const res = await axios.get(
+        `https://api.marwalproduction.com/tweets_influencers?cashtag=${selectData?.Symbol}`
+      );
+      const tweets: TweetData[] = res.data.map((tweet: any) => ({
+        ...tweet,
+        timestamp: new Date(tweet.created_at).getTime()
       }));
-      setTweetData(result);
+      setTweetData(tweets);
     } catch (err: any) {
-      setError(err.message || 'Failed to fetch tweets data');
-    } finally {
-      setLoading(false);
+      console.error("Error fetching tweets:", err);
+      // setError(err.message || "Failed to fetch tweet data") ;
     }
   };
 
   return (
-    <Box  sx={{
-      // backgroundColor: "#1a1b23",
-      backgroundColor: "#0a0a0a",
-      // border:"2px solid red",
-       color:"white"
-    }}>
-      <Box maxWidth="xl" mx="auto" >
-        <Box borderRadius={2} boxShadow={3} pt={2} pb={1}>
-          <Box display="flex" justifyContent="space-between" mb={3}>
-            <Box display="flex" alignItems="center" gap={1}>
-              <CandlestickChart color="primary" />
-              {/* <Typography variant="h5" fontWeight="bold">{name} Chart</Typography> */}
+    <Box sx={{ backgroundColor: "#0a0a0a", color: "white", maxWidth: "500px", width: "100%" }}>
+      <Box maxWidth="xl" mx="auto">
+        <Box borderRadius={2} boxShadow={3} pt={1} pb={1}>
+          {error ? (
+            <Box sx={{ width: "93%", p: 2, backgroundColor: "#0a0a0a", borderRadius: 1 }}>
+              <ErrorComponent
+                errorType={
+                  error.includes("404")
+                    ? "DATA_NOT_FOUND"
+                    : error.includes("network")
+                      ? "NETWORK_ERROR"
+                      : "DEFAULT2"
+                }
+                onRetry={fetchChartData}
+              />
             </Box>
-            <Box display="flex" alignItems="center" gap={2} >
-            <Select
-  value={timeFrame}
-  onChange={(e) => setTimeFrame(e.target.value)}
-  size="small"
-  sx={{
-    color: 'rgb(139, 92, 246)',
-    '& .MuiSelect-icon': {
-      color: 'rgb(139, 92, 246)',
-    },
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: 'rgb(139, 92, 246)',
-    },
-    '&:hover .MuiOutlinedInput-notchedOutline': {
-      borderColor: 'rgb(139, 92, 246)',
-    },
-    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: 'rgb(139, 92, 246)',
-    },
-  }}
->
-  {Object.keys(timeFrameMapping).map((key) => (
-    <MenuItem
-      key={key}
-      value={key}
-      sx={{
-        color: 'rgb(139, 92, 246)',
-        '&:hover': {
-          backgroundColor: 'rgba(139, 92, 246, 0.2)',
-        },
-      }}
-    >
-      {key.toUpperCase()}
-    </MenuItem>
-  ))}
-</Select>
+          ) : (
+            <>
+              <Box sx={{
+                borderRadius: 1,
+                width: "100%",
+                overflow: "hidden"
+              }}>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  sx={{
+                    width: "96.4%",
+                    p: 1,
+                    backgroundColor: "#121212",
+                    border: "1px solid #aaaaaa38",
+                    borderBottom: "none"
+                  }}
+                >
+                  <ToggleButtonGroup
+                    value={timeFrame}
+                    exclusive
+                    onChange={(e, newFrame) => newFrame && setTimeFrame(newFrame)}
+                    sx={{ gap: 1, borderRadius: 2, p: 0.5 }}
+                  >
+                    {timeFrames.map((frame) => (
+                      <ToggleButton
+                        key={frame}
+                        value={frame}
+                        sx={{
+                          color: "#A0A0A0",
+                          fontSize: "14px",
+                          textTransform: "none",
+                          "&.Mui-selected": {
+                            color: "rgb(139, 92, 246)"
+                          },
+                          "&:hover": {
+                            backgroundColor: "rgba(139, 92, 246, 0.2)"
+                          },
+                          p: 1
+                        }}
+                      >
+                        {frame}
+                      </ToggleButton>
+                    ))}
+                  </ToggleButtonGroup>
 
-              <IconButton onClick={fetchData} disabled={loading} color="primary">
-                {loading ? <CircularProgress size={20} /> : <Refresh />}
-              </IconButton>
-            </Box>
-          </Box>
-          {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
-          {loading ? <Box display="flex" justifyContent="center" ><CircularProgress size={40} /></Box> : data.length ? <ChartContainer xdata={tweetData??[]} data={data} /> : <Typography>No data available.</Typography>}
+                  <Typography sx={{ fontSize: "12px", color: "rgb(139, 92, 246)" , alignSelf: "center" }}>
+                    {selectData?.pairs?.pair_name?.toUpperCase()}
+                  </Typography>
+
+                  <IconButton onClick={fetchChartData} disabled={loading} color="primary">
+                    {loading ? <CircularProgress size={21} /> : <Refresh />}
+                  </IconButton>
+                </Box>
+
+                <Box sx={{
+                  width: "100%",
+                  p: 0,
+                  backgroundColor: "#121212",
+                  border: "1px solid #aaaaaa38",
+                  borderTop: "none",
+                  borderBottomLeftRadius: 1,
+                  borderBottomRightRadius: 1
+                }}>
+                  {loading ? (
+                    <ChartSkeleton />
+                  ) : data.length ? (
+                    <ChartContainer xdata={tweetData ?? []} data={data} />
+                  ) : null}
+                </Box>
+              </Box>
+            </>
+          )}
         </Box>
       </Box>
     </Box>

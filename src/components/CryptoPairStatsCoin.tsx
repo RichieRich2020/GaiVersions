@@ -167,13 +167,15 @@ const PositiveChange = styled(Box)(({ theme }) => ({
 }));
 
 // Main component
-const CryptoPairStats = ({
+const CryptoPairStatsCoin = ({
   pair = "XAU/USDT",
   currentPrice = "$0.1234",
   marketCap = "$629.97K",
   priceChange24h = "+5.67%",
+  keyName,
+  keyName2,
+  total_supply,
   liquidity = "$500,000",
-  para,
   fdv = "$0.1234",
   tvl = "$0.1234"
 }) => {
@@ -250,7 +252,7 @@ const CryptoPairStats = ({
             {/* Liquidity */}
             <Grid item xs={4}>
               <StatBox>
-                <StatLabel>{para}</StatLabel>
+                <StatLabel>{keyName}</StatLabel>
                 <StatValue>{formatCurrencyValue(liquidity)}</StatValue>
               </StatBox>
             </Grid>
@@ -266,8 +268,34 @@ const CryptoPairStats = ({
             {/* TVL */}
             <Grid item xs={4}>
               <StatBox>
-                <StatLabel>Market Cap</StatLabel>
-                <StatValue>{formatCurrencyValue(tvl)}</StatValue>
+                <StatLabel>{keyName2}</StatLabel>
+                
+                {total_supply["buys"]?<>
+                <Box sx={{
+                  display:"flex",
+                  width:"100%",
+                  justifyContent:"space-around"
+                }}>
+                  <Box>
+                  <StatLabel sx={{
+                    color:"green"
+                  }}>BUY </StatLabel>
+                  <StatValue>  {total_supply.buys}</StatValue>
+                  </Box>
+                  
+              <Box>       <StatLabel sx={{
+                    color:"red"
+                  }}>SELL</StatLabel>
+              <StatValue>  {total_supply.sells}</StatValue>
+              
+              </Box>
+         
+                </Box>
+                 
+                 </>:
+                   <StatValue> {formatCurrencyValue(total_supply)}</StatValue>
+                   }
+               
               </StatBox>
             </Grid>
           </StatsGridContainer>
@@ -277,4 +305,4 @@ const CryptoPairStats = ({
   );
 };
 
-export default CryptoPairStats;
+export default CryptoPairStatsCoin;
